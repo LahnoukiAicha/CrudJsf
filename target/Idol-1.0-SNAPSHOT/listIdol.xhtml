@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+    <title> #{msgs.create_idol_title}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <h:outputStylesheet name="css/style.css" />
+    <style type="">
+        .btn{
+            margin: 20px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h:commandButton styleClass="btn btn-outline-warning" value="English" action="#{localeBean.changeLocale('en')}" />
+        <h:commandButton  styleClass="btn btn-outline-dark " value="French" action="#{localeBean.changeLocale('fr')}" />
+    </h:form>
+    <div class="container mt-5">
+        <h2 class="mb-4">#{msgs.form_title}</h2>
+        <h:form id="idolsForm">
+            <h:dataTable value="#{idolBean.idols}" var="idol" class="table table-striped">
+
+                <h:column>
+                    <f:facet name="header">#{msgs.first_name}</f:facet>
+                    <h:outputText value="#{idol.firstName}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:inputText value="#{idol.firstName}" rendered="#{idolBean.editModes[idol.id]}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">#{msgs.last_name}</f:facet>
+                    <h:outputText value="#{idol.lastName}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:inputText value="#{idol.lastName}" rendered="#{idolBean.editModes[idol.id]}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">#{msgs.role}</f:facet>
+                    <h:outputText value="#{idol.role}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:selectOneMenu value="#{idol.role}" rendered="#{idolBean.editModes[idol.id]}">
+                        <f:selectItem itemValue="V" itemLabel="#{msgs.vocalist}" />
+                        <f:selectItem itemValue="D" itemLabel="#{msgs.dancer}" />
+                        <f:selectItem itemValue="R" itemLabel="#{msgs.rapper}" />
+                    </h:selectOneMenu>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">#{msgs.email}</f:facet>
+                    <h:outputText value="#{idol.email}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:inputText value="#{idol.email}" rendered="#{idolBean.editModes[idol.id]}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">#{msgs.password}</f:facet>
+                    <h:outputText value="#{idol.passwd}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:inputText value="#{idol.passwd}" rendered="#{idolBean.editModes[idol.id]}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton styleClass="btn btn-outline-primary" action="#{idolBean.toggleEditMode(idol)}" value="#{msgs.edit}" rendered="#{not idolBean.editModes[idol.id]}" />
+                    <h:commandButton styleClass="btn btn-outline-success" action="#{idolBean.updateIdol(idol)}" value="#{msgs.save}" rendered="#{idolBean.editModes[idol.id]}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">#{msgs.delete}</f:facet>
+                    <h:commandButton styleClass="btn btn-outline-danger" action="#{idolBean.deleteIdol(idol.id)}" value="#{msgs.delete}" />
+                </h:column>
+            </h:dataTable>
+            <h:commandButton id="createBtn" styleClass="btn btn-outline-info"  value="#{msgs.create_new_idol}" action="#{idolBean.showCode}" />
+        </h:form>
+    </div>
+
+    <ui:fragment rendered="#{idolBean.showCodeSnippet}">
+        <div class="container-md" >
+
+            <div class="card" style="width: 500px;">
+                <div class="card-body">
+                    <h3 class="card-title text-center" >#{msgs.form_title}</h3>
+                    <h:form id="createIdolForm">
+                        <div class="form-group">
+                            <h:outputLabel for="firstName"> #{msgs.first_name} :</h:outputLabel>
+                            <h:inputText id="firstName" class="form-control" name="firstName" value="#{idolBean.idolAdd.firstName}" required="true"
+                                         requiredMessage="#{msgs.validator_name1}"
+                                         validatorMessage="#{msgs.validator_name2}" >
+                                <f:validateLength minimum="3" maximum="12"  />
+                            </h:inputText>
+                            <h:message for="firstName" style="color:red"  />
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="lastName"> #{msgs.last_name} :</h:outputLabel>
+                            <h:inputText id="lastName" class="form-control" name="lastName" value="#{idolBean.idolAdd.lastName}" required="true"
+                                         requiredMessage="#{msgs.validator_last1}"
+                                         validatorMessage="#{msgs.validator_last2}">
+                                <f:validateRequired /><f:validateLength minimum = "3" maximum = "12" />
+                            </h:inputText>
+                            <h:message for = "lastName" style = "color:red" />
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="role">#{msgs.role} :</h:outputLabel><br/>
+                            <div class="form-check form-check-inline">
+                                <h:selectOneMenu  id="role" class="form-check-input" value="#{idolBean.idolAdd.role}" validatorMessage="#{msgs.validator_role}">
+                                    <f:selectItem itemValue="V" itemLabel="#{msgs.vocalist}" />
+                                    <f:selectItem itemValue="D" itemLabel="#{msgs.dancer}" />
+                                    <f:selectItem itemValue="R" itemLabel="#{msgs.rapper}" />
+                                    <f:validateRequired />
+
+                                </h:selectOneMenu >
+                                <h:message for = "role" style = "color:red" />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <h:outputLabel for="email">#{msgs.email}:</h:outputLabel>
+                            <h:inputText id="email" class="form-control" name="email" value="#{idolBean.idolAdd.email}" required="true" requiredMessage="#{msgs.validator_email1}" pt:placeholder="bla@gmail.com">
+                                <f:validator validatorId="customValidator" />
+                            </h:inputText>
+                            <h:message for="email" style="color:red" />
+                            <h:outputText value="#{idolBean.requiredError}" style="color:red" rendered="#{not empty idolBean.requiredError}" />
+                            <h:outputText value="#{idolBean.emailExistError}" style="color:red" rendered="#{not  empty idolBean.emailExistError}" />
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <h:outputLabel for="passwd">#{msgs.password}:</h:outputLabel>
+                            <h:inputSecret id="passwd" class="form-control" name="passwd" value="#{idolBean.idolAdd.passwd}" required="true" requiredMessage="#{msgs.validator_password1}" pt:placeholder="A1***">
+                                <f:validator validatorId="customValidator" />
+                            </h:inputSecret>
+                            <h:message for = "passwd" style = "color:red" />
+                        </div>
+                        <div class="form-group text-center">
+                            <h:commandButton  styleClass="btn btn-outline-success" value="#{msgs.send}" action="#{idolBean.addIdol}"></h:commandButton>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:fragment>>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" type=""></script>
+</h:body>
+</html>

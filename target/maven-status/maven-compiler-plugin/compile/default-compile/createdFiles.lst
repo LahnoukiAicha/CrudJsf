@@ -1,0 +1,8 @@
+Dao\IdolDao.class
+Beans\IdolBean.class
+Beans\LocalBean.class
+Utils\ConnectionDb.class
+Beans\CustomValidator.class
+Model\Idol.class
+Services\IdolService.class
+Dao\IdolDaoImpl.class
